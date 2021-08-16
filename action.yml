@@ -1,7 +1,7 @@
-name: 'Upload to Google Drive'
+name: 'Upload to Google Drive (forked)'
 description: 'Uploads a file or a folder to Google Drive'
-author: 'Yayo Acosta'
-inputs: 
+author: 'Yayo Acosta & Max Isom'
+inputs:
   credentials:
     description: 'Google Service Account credentials'
     required: true
@@ -18,9 +18,11 @@ inputs:
 outputs:
   link:
     description: 'A link to the Drive folder'
+  fileLink:
+    description: 'A direct link to the uploaded file'
 runs:
   using: 'node12'
   main: 'dist/index.js'
 branding:
-  icon: 'upload-cloud'  
+  icon: 'upload-cloud'
   color: 'orange'
