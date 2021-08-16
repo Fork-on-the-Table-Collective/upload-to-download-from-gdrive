@@ -15,6 +15,7 @@
   "dependencies": {
     "@actions/core": "^1.2.4",
     "archiver": "^4.0.1",
+    "glob": "^7.1.7",
     "googleapis": "^51.0.0"
   },
   "devDependencies": {

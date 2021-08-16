@@ -1,4 +1,8 @@
-**A fork of [Jodebu/upload-to-drive](https://github.com/Jodebu/upload-to-drive). Adds `fileLink` output parameter.**
+**A fork of [Jodebu/upload-to-drive](https://github.com/Jodebu/upload-to-drive).**
+
+## Changes:
+- Adds `fileLink` output parameter.
+- Accepts glob for input files
 
 # Upload to Google Drive
 This is a **GitHub action** to upload a file or a folder (zipped) to **Google Drive** using a Google Service Account.
@@ -78,8 +82,8 @@ The ID of the Google Drive folder you want to upload to.
 
 ### `target`
 Required: **YES**
-The local path to the file or folder you want to upload.
->If the path to a folder is given, it will be zipped before upload.
+The glob pattern for the file(s) to upload.
+>If multiple files are matched, they will be zipped before upload.
 
 ### `name`
 Required: **NO**
