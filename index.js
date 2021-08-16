@@ -13,6 +13,8 @@ const target = actions.getInput('target', { required: true });
 const name = actions.getInput('name', { required: false });
 /** Link to the Drive folder */
 const link = 'link';
+/* Link to file inside of folder */
+const fileLink = 'fileLink';
 
 const credentialsJSON = JSON.parse(Buffer.from(credentials, 'base64').toString());
 const scopes = ['https://www.googleapis.com/auth/drive'];
@@ -79,11 +81,15 @@ function uploadToDrive() {
     media: {
       body: fs.createReadStream(`${name || target}${fs.lstatSync(target).isDirectory() ? '.zip' : ''}`)
     }
-  }).then(() => actions.info('File uploaded successfully'))
-    .catch(e => {
-      actions.error('Upload failed');
-      throw e;
-    });
+  })
+  .then(res => {
+    actions.setOutput(fileLink, `https://drive.google.com/file/d/${res.data.id}/view?usp=sharing`)
+    actions.info('File uploaded successfully')
+  })
+  .catch(e => {
+    actions.error('Upload failed');
+    throw e;
+  });
 }
 
 main().catch(e => actions.setFailed(e));

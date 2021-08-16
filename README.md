@@ -1,3 +1,5 @@
+**A fork of [Jodebu/upload-to-drive](https://github.com/Jodebu/upload-to-drive). Adds `fileLink` output parameter.**
+
 # Upload to Google Drive
 This is a **GitHub action** to upload a file or a folder (zipped) to **Google Drive** using a Google Service Account.
 
@@ -29,7 +31,7 @@ Added an output with a link to the Drive folder.
 This section lists the requirements to make this action work and how to meet them.
 
 ### Google Service Account (GSA)
-First of all you will need a **Google Service Account** for your project. Service accounts are just specific Google account types that are used by services instead of people.  
+First of all you will need a **Google Service Account** for your project. Service accounts are just specific Google account types that are used by services instead of people.
 To make one go to [*Service Accounts*](https://console.cloud.google.com/apis/credentials) in the *IAM and administration* section of the **Google Cloud Plattform** dashboard and create a new project or choose the one you are already using for your current shenanigans.
 Click on create new service account and continue with the process. At the end you will get the option to generate a key, **we need this key so store it safely**. It's a json file whith the following structure:
 ```json
@@ -52,7 +54,7 @@ Go to your **Google Drive** and find the folder you want your files to be upload
 While you are here, take a note of **the folder's ID**, the long set of characters after the last `/` in your address bar if you have the folder opened in your browser.
 
 ### Store credentials as GitHub secrets
-This action needs your GSA credentials to properly authenticate with Google and we don't want anybody to take a peek at them, right? Go to the **Secrets** section of your repo and add a new secret for your credentials. As per GitHub's recommendation, we will store any complex data (like your fancy JSON credentials) as a base64 encoded string.  
+This action needs your GSA credentials to properly authenticate with Google and we don't want anybody to take a peek at them, right? Go to the **Secrets** section of your repo and add a new secret for your credentials. As per GitHub's recommendation, we will store any complex data (like your fancy JSON credentials) as a base64 encoded string.
 You can encode jour `.json` file easily into a new `.txt` file using any bash terminal (just don't forget to change the placeholders with the real name of your credentials file and and the desired output):
 ```bash
 $ base64 CREDENTIALS_FILENAME.json > ENCODED_CREDENTIALS_FILENAME.txt
@@ -65,25 +67,25 @@ The contents of the newly generated `.txt` file is what we have to procure as a 
 This section lists all inputs this action can take.
 
 ### `credentials`
-Required: **YES**  
+Required: **YES**
 A base64 encoded string with your GSA credentials.
 
 ### `folder`
-Required: **YES**  
-The ID of the Google Drive folder you want to upload to.  
+Required: **YES**
+The ID of the Google Drive folder you want to upload to.
 >I would suggest you store this as an environmental variable or a Github secret
 
 
 ### `target`
-Required: **YES**  
+Required: **YES**
 The local path to the file or folder you want to upload.
 >If the path to a folder is given, it will be zipped before upload.
 
 ### `name`
-Required: **NO**  
-Default: `null`  
+Required: **NO**
+Default: `null`
 The name you want your zip file to have.
->- If the `target` input is a file, this input will be ignored.  
+>- If the `target` input is a file, this input will be ignored.
 >- If not provided, it will default to the folder's name.
 
 ## Outputs
@@ -92,6 +94,9 @@ A link to the Drive folder.
 
 ### `link`
 A link to the Drive folder.
+
+### `fileLink`
+A direct link to the uploaded file.
 
 ## Usage Examples
 This section contains some useful examples.
@@ -204,7 +209,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           lfs: true
-    
+
       # Cache
       - uses: actions/cache@v1.1.0
         with:
@@ -221,7 +226,7 @@ jobs:
         with:
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
-      
+
       # Upload test results
       - uses: actions/upload-artifact@v1
         with:
