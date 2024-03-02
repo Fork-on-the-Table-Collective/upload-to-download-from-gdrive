@@ -5,11 +5,14 @@ inputs:
   credentials:
     description: 'Google Service Account credentials'
     required: true
-  folder:
-    description: 'Google Drive folder ID to upload the file/folder to'
+  uploadOrDownload:
+    description: 'download or upload'
+    required: true
+  folderOrfileID:
+    description: 'Google Drive folder ID to upload the file/folder to or file ID to download'
     required: true
   target:
-    description: 'Local path to the file/folder to upload'
+    description: 'Local path to the file/folder to upload or to filepath to download'
     required: true
   name:
     description: 'Optional name for the zipped file'
@@ -18,6 +21,8 @@ inputs:
 outputs:
   link:
     description: 'A link to the Drive folder'
+  refId:
+    description: 'Id of the uploaded file'
   fileLink:
     description: 'A direct link to the uploaded file'
 runs:
