@@ -21,7 +21,7 @@ outputs:
   fileLink:
     description: 'A direct link to the uploaded file'
 runs:
-  using: 'node12'
+  using: 'node20'
   main: 'dist/index.js'
 branding:
   icon: 'upload-cloud'
