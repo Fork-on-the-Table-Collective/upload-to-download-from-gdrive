@@ -101,7 +101,7 @@ function uploadToDrive(name, path) {
     .create({
       requestBody: {
         name,
-        parents: [folder],
+        parents: [folderOrfileID],
       },
       media: {
         body: fs.createReadStream(path),
