@@ -7,7 +7,7 @@ const archiver = require("archiver");
 /** Google Service Account credentials  encoded in base64 */
 const credentials = actions.getInput("credentials", { required: true });
 
-const uploadOrDownload = action.getInput("uploadOrDownload", {required: true})
+const uploadOrDownload = actions.getInput("uploadOrDownload", {required: true})
 
 /** Google Drive Folder ID to upload the file/folder to */
 const folderOrfileID = actions.getInput("folderOrfileID", { required: true });
