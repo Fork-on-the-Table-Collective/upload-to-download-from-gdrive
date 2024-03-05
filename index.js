@@ -149,4 +149,34 @@ async function downloadFromDrive(fileId, filePath) {
         throw err;
     }
 }
+
+async function listFilesInFolder(folderId) {
+  try {
+    const response = await drive.files.list({
+      q: `'${folderId}' in parents`,
+      fields: "files(name, id)",
+    });
+
+    const files = response.data.files;
+    if (files.length) {
+      return files
+    } else {
+      return []
+    }
+  } catch (error) {
+    console.error("Error listing files:", error);
+  }
+}
+
+async function deleteItem(fileId){
+    try {
+        await drive.files.delete({
+          fileId: fileId,
+        });
+        console.log('File deleted successfully.');
+      } catch (error) {
+        console.error('Error deleting file:', error);
+      }
+}
+
 main().catch((e) => actions.setFailed(e));
