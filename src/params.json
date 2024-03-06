@@ -1,0 +1,62 @@
+{
+  "name": "Upload to google drive/Download from google drive/Delete from google drive/List files in Google Drive",
+  "description": "Uploads a file or a folder to Google Drive",
+  "author": "Tamas Guber",
+  "inputs": {
+    "credentials": {
+      "description": "base64 encripted Google Service Account JSON credentials",
+      "required": true,
+      "default": ""
+    },
+    "localPath": {
+      "description": "Local path to the file/folder to upload or to filepath to download",
+      "required": true,
+      "default": ""
+    },
+    "actionType": {
+      "description": "Type of action. upload|download|list|delete",
+      "required": true,
+      "default": "upload"
+    },
+    "googleFolderId": {
+      "description": "Google Drive folder ID to upload a file or list content",
+      "required": false,
+      "default": ""
+    },
+    "googleFileId": {
+      "description": "Google Drive file ID to download a file or delete it",
+      "required": false,
+      "default": ""
+    },
+    "zipName": {
+      "description": "Optional name for the zipped file",
+      "required": false,
+      "default": ""
+    },
+    "emptyUploadFolder": {
+      "description": "Set to true if you want to delete all files from the upload folder",
+      "required": false,
+      "default": false
+    },
+    "filterForDelete": {
+      "description": "If emptyUploadFolder is set to true then only those files will be deleted which contains this given sting",
+      "required": false,
+      "default": ""
+    }
+  },
+  "outputs": {
+    "link": { "value": "link", "description": "A link to the Drive folder" },
+    "refId": { "value": "refId", "description": "Id of the uploaded file" },
+    "fileLink": {
+      "value": "fileLink",
+      "description": "A direct link to the uploaded file"
+    },
+    "folderFiles": {
+      "value": "folderFiles",
+      "description": "List of file names and IDs from the folder"
+    }
+  },
+  "runs":{
+  "using": "node20",
+  "main": "dist/index.js"}
+}
