@@ -36,16 +36,12 @@ inputs:
     default: ""
 outputs:
   link:
-    value: link
     description: A link to the Drive folder
   refId:
-    value: refId
     description: Id of the uploaded file
   fileLink:
-    value: fileLink
     description: A direct link to the uploaded file
   folderFiles:
-    value: folderFiles
     description: List of file names and IDs from the folder
 runs:
   using: node20
