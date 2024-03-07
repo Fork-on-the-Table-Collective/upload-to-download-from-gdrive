@@ -1,4 +1,4 @@
-name: Gooble drive Tests
+name: Google drive Tests
 on:
   workflow_dispatch:
 
@@ -69,7 +69,7 @@ jobs:
       - name: Show list
         run: echo ${{steps.list_files_in_folder.outputs.folderFiles}}
   deletetest:
-    needs: uploadtest
+    needs: [listtest,uploadtest]
     name: Testing the Google Drive Delete File
     runs-on: ubuntu-latest
     steps:
