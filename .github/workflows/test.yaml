@@ -1,0 +1,94 @@
+name: Gooble drive Tests
+on:
+  workflow_dispatch:
+
+env:
+  folderId: "1GIxifkGolQsOrNLFbQ6Z_n478_yG63Zz"
+jobs:
+  uploadtest:
+    name: Testing the Google Drive Upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+      - name: Upload a file
+        uses: ./action.yml
+        with:
+          credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
+          localPath: ./action.yml
+          actionType: upload
+          googleFolderId: ${{env.folderId}}
+      - name: Upload a folder as zip
+        uses: ./action.yml
+        with:
+          credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
+          localPath: ./src
+          actionType: upload
+          googleFolderId: ${{env.folderId}}
+          zipName: folderUploadTest
+      - name: Upload a file and delete matching Files
+        id: lastupload
+        uses: ./action.yml
+        with:
+          credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
+          localPath: ./action.yml
+          actionType: upload
+          googleFolderId: ${{env.folderId}}
+          emptyUploadFolder: true
+          filterForDelete: "action"
+    outputs:
+      fileId: ${{ steps.lastupload.outputs.refId }}
+  downloadtest:
+    needs: uploadtest
+    name: Testing the Google Drive Download
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+      - name: Download a file
+        uses: ./action.yml
+        with:
+          credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
+          localPath: ./test
+          actionType: download
+          googleFileId: ${{needs.uploadtest.outputs.fileId}}
+  listtest:
+    needs: downloadtest
+    name: Testing the Google Drive Folder List
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+      - name: Get a list files in folder
+        id: list_files_in_folder
+        uses: ./action.yml
+        with:
+          credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
+          actionType: list
+          googleFolderId: ${{env.folderId}}
+      - name: Show list
+        run: echo ${{steps.list_files_in_folder.outputs.folderFiles}}
+  deletetest:
+    needs: uploadtest
+    name: Testing the Google Drive Delete File
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+      - name: Download a file
+        uses: ./action.yml
+        with:
+          credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
+          actionType: delete
+          googleFileId: ${{needs.uploadtest.outputs.fileId}}
+      - name: Get a list files in folder
+        id: list_files_in_folder
+        uses: ./action.yml
+        with:
+          credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
+          actionType: list
+          googleFolderId: ${{env.folderId}}
+      - name: Show list
+        run: echo ${{steps.list_files_in_folder.outputs.folderFiles}}
+
+
