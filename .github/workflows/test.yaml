@@ -14,14 +14,14 @@ jobs:
       - name: list_files
         run: ls -al
       - name: Upload a file
-        uses: ./action.yml
+        uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
           localPath: ./action.yml
           actionType: upload
           googleFolderId: ${{env.folderId}}
       - name: Upload a folder as zip
-        uses: ./action.yml
+        uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
           localPath: ./src
@@ -30,7 +30,7 @@ jobs:
           zipName: folderUploadTest
       - name: Upload a file and delete matching Files
         id: lastupload
-        uses: ./action.yml
+        uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
           localPath: ./action.yml
@@ -48,7 +48,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
       - name: Download a file
-        uses: ./action.yml
+        uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
           localPath: ./test
@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v4.1.1
       - name: Get a list files in folder
         id: list_files_in_folder
-        uses: ./action.yml
+        uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
           actionType: list
@@ -78,14 +78,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
       - name: Download a file
-        uses: ./action.yml
+        uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
           actionType: delete
           googleFileId: ${{needs.uploadtest.outputs.fileId}}
       - name: Get a list files in folder
         id: list_files_in_folder
-        uses: ./action.yml
+        uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
           actionType: list
