@@ -39,6 +39,8 @@ outputs:
     description: A link to the Drive folder
   refId:
     description: Id of the uploaded file
+  refName:
+    description: Name of the uploaded file
   fileLink:
     description: A direct link to the uploaded file
   folderFiles:

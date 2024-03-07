@@ -106,14 +106,15 @@ const uploadToDrive = async (
         params.outputs.link.value,
         `https://drive.google.com/file/d/${res.data.id}/view?usp=sharing`
       );
-      if (params.inputs.emptyUploadFolder.default) {
-        existingFiles.forEach((file) => {
+      if (params.inputs.emptyUploadFolder.default==="true") {
+        existingFiles.forEach(async (file) => {
           if (file.name.includes(params.inputs.filterForDelete.default)) {
-            deleteItem(drive, file.id);
+            await deleteItem(drive, file.id);
           }
         });
       }
       actions.setOutput(params.outputs.refId.value, res.data.id);
+      actions.setOutput(params.outputs.refName.value, res.data.name);
       actions.info("File uploaded successfully");
       const listOfFilesAfterUpload: drive_v3.Schema$File[] = await listFilesInFolder(
         drive,
@@ -180,7 +181,7 @@ const listFilesInFolder = async (drive: drive_v3.Drive, folderId: string) => {
 
     const files = response.data.files;
     if (files?.length) {
-      
+
       return files;
     } else {
       return [] as drive_v3.Schema$File[];
@@ -219,7 +220,7 @@ const main = async () => {
     const targets: string[] = glob.sync(params.inputs.localPath.default);
     if (targets.length === 1 && !isDirectory(targets[0])) {
       const filename: string = targets[0].split("/").pop() as string;
-      uploadToDrive(drive, filename, targets[0], params);
+      await uploadToDrive(drive, filename, targets[0], params);
     } else {
       actions.info(
         `Multiple items or folder detected for glob ${params.inputs.localPath.default}`
@@ -229,8 +230,8 @@ const main = async () => {
       const filename = `${params.inputs.zipName.default}.zip`;
 
       zipItemsByGlob(params.inputs.localPath.default, filename)
-        .then(() => {
-          uploadToDrive(drive, filename, filename, params);
+        .then(async () => {
+          await uploadToDrive(drive, filename, filename, params);
         })
         .catch((e: Error) => {
           actions.error(`Zip failed. ${e}`);
@@ -238,7 +239,7 @@ const main = async () => {
         });
     }
   } else if (params.inputs.actionType.default === "download") {
-    downloadFromDrive(
+    await downloadFromDrive(
       drive,
       params.inputs.googleFileId.default,
       params.inputs.localPath.default
