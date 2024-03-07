@@ -47,6 +47,7 @@
   "outputs": {
     "link": { "value": "link", "description": "A link to the Drive folder" },
     "refId": { "value": "refId", "description": "Id of the uploaded file" },
+    "refName": { "value": "refName", "description": "Name of the uploaded file" },
     "fileLink": {
       "value": "fileLink",
       "description": "A direct link to the uploaded file"

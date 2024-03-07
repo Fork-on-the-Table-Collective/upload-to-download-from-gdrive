@@ -39,6 +39,7 @@ jobs:
           filterForDelete: "action"
     outputs:
       fileId: ${{ steps.lastupload.outputs.refId }}
+      fileName: ${{ steps.lastupload.outputs.refName }}
   downloadtest:
     needs: uploadtest
     name: Testing the Google Drive Download
@@ -50,11 +51,11 @@ jobs:
         uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
-          localPath: ./download
+          localPath: ./downloaded_${{needs.uploadtest.outputs.fileName}}
           actionType: download
           googleFileId: ${{needs.uploadtest.outputs.fileId}}
       - name: List downloaded files
-        run: ls -al download/
+        run: ls -al 
   listtest:
     needs: downloadtest
     name: Testing the Google Drive Folder List

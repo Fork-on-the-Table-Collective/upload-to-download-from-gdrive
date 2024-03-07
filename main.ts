@@ -114,6 +114,7 @@ const uploadToDrive = async (
         });
       }
       actions.setOutput(params.outputs.refId.value, res.data.id);
+      actions.setOutput(params.outputs.refName.value, res.data.name);
       actions.info("File uploaded successfully");
       const listOfFilesAfterUpload: drive_v3.Schema$File[] = await listFilesInFolder(
         drive,
