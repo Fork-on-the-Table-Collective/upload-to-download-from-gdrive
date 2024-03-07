@@ -11,13 +11,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
-      - name: Upload a file
+      - name: Upload a file and empty folder
         uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
           localPath: ./action.yml
           actionType: upload
           googleFolderId: ${{env.folderId}}
+          emptyUploadFolder: true
       - name: Upload a folder as zip
         uses: ./
         with:
@@ -75,7 +76,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
-      - name: Download a file
+      - name: Delete a file
         uses: ./
         with:
           credentials: ${{secrets.GOOGLE_DRIVE_SECRET}}
