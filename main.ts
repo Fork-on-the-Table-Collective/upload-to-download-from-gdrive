@@ -88,6 +88,8 @@ const uploadToDrive = async (
     drive,
     params.inputs.googleFolderId.default
   );
+  actions.info("List of existing files:")
+  actions.info(JSON.stringify(existingFiles))
   actions.info("Uploading file to Google Drive...");
   drive.files
     .create({
@@ -99,7 +101,7 @@ const uploadToDrive = async (
         body: fs.createReadStream(path),
       },
     })
-    .then((res: any) => {
+    .then(async (res: any) => {
       actions.setOutput(
         params.outputs.link.value,
         `https://drive.google.com/file/d/${res.data.id}/view?usp=sharing`
@@ -113,6 +115,12 @@ const uploadToDrive = async (
       }
       actions.setOutput(params.outputs.refId.value, res.data.id);
       actions.info("File uploaded successfully");
+      const listOfFilesAfterUpload: drive_v3.Schema$File[] = await listFilesInFolder(
+        drive,
+        params.inputs.googleFolderId.default
+      );
+      actions.info("List of files after upload:")
+      actions.info(JSON.stringify(listOfFilesAfterUpload))
     })
     .catch((e: Error) => {
       actions.error("Upload failed");
@@ -172,6 +180,7 @@ const listFilesInFolder = async (drive: drive_v3.Drive, folderId: string) => {
 
     const files = response.data.files;
     if (files?.length) {
+      
       return files;
     } else {
       return [] as drive_v3.Schema$File[];

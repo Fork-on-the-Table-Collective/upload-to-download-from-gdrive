@@ -6,14 +6,14 @@ inputs:
     description: base64 encripted Google Service Account JSON credentials
     required: true
     default: ""
-  localPath:
-    description: Local path to the file/folder to upload or to filepath to download
-    required: true
-    default: ""
   actionType:
     description: Type of action. upload|download|list|delete
     required: true
     default: upload
+  localPath:
+    description: Local path to the file/folder to upload or to filepath to download
+    required: false
+    default: ""
   googleFolderId:
     description: Google Drive folder ID to upload a file or list content
     required: false
