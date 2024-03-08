@@ -1,14 +1,15 @@
 import * as actions from "@actions/core";
 import { google, drive_v3 } from "googleapis";
 import * as fs from "fs";
+import * as path from 'path';
 import * as glob from "glob";
 import archiver from "archiver";
-import * as params from "./src/params.json"
+import * as params from "./src/params.json";
 /**
  * SetParams
  */
 const setParams = () => {
-  params["driveLinkToFolderBase"]="https://drive.google.com/drive/folders/"
+  params["driveLinkToFolderBase"] = "https://drive.google.com/drive/folders/";
   for (const input in params.inputs) {
     params.inputs[input].default = actions.getInput(input, {
       required: params.inputs[input]["required"],
@@ -51,25 +52,41 @@ const setUpDrive = (credentials: string): drive_v3.Drive => {
  * @param {string} out Name of the resulting zipped file
  */
 const zipItemsByGlob = (glob: string, out: string) => {
-  const archive = archiver("zip", { zlib: { level: 9 } });
+  const archive = archiver('zip', { zlib: { level: 9 } });
   const stream = fs.createWriteStream(out);
 
   return new Promise<void>((resolve, reject) => {
-    archive
-      .glob(glob)
-      .on("error", (err: Error) => reject(err))
-      .pipe(stream);
+      const stats = fs.statSync(glob);
+      if (stats.isDirectory()) {
+          // If it's a directory, recursively add its contents to the archive
+          addFolderToArchive(glob, '', archive);
+      } else {
+          archive.file(glob, { name: path.basename(glob) });
+      }
 
-    stream.on("close", () => {
-      actions.info(
-        `Files successfully zipped: ${archive.pointer()} total bytes written`
-      );
-      return resolve();
-    });
+      archive.on('error', (err: Error) => reject(err));
+      stream.on('close', () => {
+          console.log(`Files successfully zipped: ${archive.pointer()} total bytes written`);
+          resolve();
+      });
 
-    archive.finalize();
+      archive.pipe(stream);
+      archive.finalize();
   });
 };
+
+function addFolderToArchive(folderPath: string, parentDir: string, archive: archiver.Archiver) {
+  const files = fs.readdirSync(folderPath);
+  files.forEach(file => {
+      const filePath = path.join(folderPath, file);
+      const stats = fs.statSync(filePath);
+      if (stats.isDirectory()) {
+          addFolderToArchive(filePath, path.join(parentDir, file), archive);
+      } else {
+          archive.file(filePath, { name: path.join(parentDir, file) });
+      }
+  });
+}
 
 /**
  * Uploads the file to Google Drive
@@ -88,8 +105,8 @@ const uploadToDrive = async (
     drive,
     params.inputs.googleFolderId.default
   );
-  actions.info("List of existing files:")
-  actions.info(JSON.stringify(existingFiles))
+  actions.info("List of existing files:");
+  actions.info(JSON.stringify(existingFiles));
   actions.info("Uploading file to Google Drive...");
   drive.files
     .create({
@@ -106,7 +123,7 @@ const uploadToDrive = async (
         params.outputs.link.value,
         `https://drive.google.com/file/d/${res.data.id}/view?usp=sharing`
       );
-      if (params.inputs.emptyUploadFolder.default==="true") {
+      if (params.inputs.emptyUploadFolder.default === "true") {
         existingFiles.forEach(async (file) => {
           if (file.name.includes(params.inputs.filterForDelete.default)) {
             await deleteItem(drive, file.id);
@@ -116,12 +133,10 @@ const uploadToDrive = async (
       actions.setOutput(params.outputs.refId.value, res.data.id);
       actions.setOutput(params.outputs.refName.value, res.data.name);
       actions.info("File uploaded successfully");
-      const listOfFilesAfterUpload: drive_v3.Schema$File[] = await listFilesInFolder(
-        drive,
-        params.inputs.googleFolderId.default
-      );
-      actions.info("List of files after upload:")
-      actions.info(JSON.stringify(listOfFilesAfterUpload))
+      const listOfFilesAfterUpload: drive_v3.Schema$File[] =
+        await listFilesInFolder(drive, params.inputs.googleFolderId.default);
+      actions.info("List of files after upload:");
+      actions.info(JSON.stringify(listOfFilesAfterUpload));
     })
     .catch((e: Error) => {
       actions.error("Upload failed");
@@ -181,7 +196,6 @@ const listFilesInFolder = async (drive: drive_v3.Drive, folderId: string) => {
 
     const files = response.data.files;
     if (files?.length) {
-
       return files;
     } else {
       return [] as drive_v3.Schema$File[];
