@@ -2,7 +2,6 @@
 This action allows you to interact with files and folders in Google Drive.
 
 ## Table of Contents
-- [Changes](#changes)
 - [Setup](#setup)
     - [Google Service Account (GSA)](#google-service-account-gsa)
     - [Share Drive folder with the GSA](#share-drive-folder-with-the-gsa)
